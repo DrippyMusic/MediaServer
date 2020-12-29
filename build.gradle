@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'me.vitormac'
+version '1.0'
+
+mainClassName = 'me.vitormac.mediaserver.Main'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'me.vitormac', name: 'MediaCore', version: '1.0'
+
+    compile group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.68'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    compile group: 'io.github.cdimascio', name: 'dotenv-java', version: '2.2.0'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName,
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
+        )
+    }
+}

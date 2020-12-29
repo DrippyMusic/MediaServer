@@ -1,0 +1,10 @@
+.vscode
+.gradle
+.idea
+.env
+
+/build
+/gradle
+
+gradlew
+gradlew.bat
