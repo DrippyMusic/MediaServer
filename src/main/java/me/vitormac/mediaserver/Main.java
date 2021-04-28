@@ -21,7 +21,11 @@ public class Main {
     private static final String ORIGIN;
 
     static {
-        Dotenv dotenv = Dotenv.load();
+        Dotenv dotenv = Dotenv.configure()
+                .ignoreIfMissing().load();
+
+        EnvUtils.check(dotenv, "PRIVATE_KEY");
+        EnvUtils.check(dotenv, "PUBLIC_KEY");
 
         PORT = Integer.parseInt(dotenv.get("PORT", "4770"));
         ORIGIN = dotenv.get("ORIGIN", "*");

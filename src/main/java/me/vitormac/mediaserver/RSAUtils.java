@@ -1,5 +1,6 @@
 package me.vitormac.mediaserver;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.AsymmetricBlockCipher;
@@ -24,26 +25,28 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.Objects;
 
 public final class RSAUtils {
-
-    public static final File SSH = new File(FileUtils.getUserDirectory(), ".ssh");
 
     private static PublicKey PUBLIC_KEY;
     private static PrivateKey PRIVATE_KEY;
 
     static {
+        Dotenv dotenv = Dotenv.configure()
+                .ignoreIfMissing().load();
+
         try {
             KeyFactory factory = KeyFactory.getInstance("RSA");
 
-            try (PemReader reader = new PemReader(new FileReader(new File(SSH, "stream.pem")))) {
+            try (PemReader reader = new PemReader(new FileReader(dotenv.get("PRIVATE_KEY")))) {
                 PemObject object = reader.readPemObject();
                 PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(object.getContent());
 
                 PRIVATE_KEY = factory.generatePrivate(privKeySpec);
             }
 
-            try (PemReader reader = new PemReader(new FileReader(new File(SSH, "stream.pub")))) {
+            try (PemReader reader = new PemReader(new FileReader(dotenv.get("PUBLIC_KEY")))) {
                 PemObject object = reader.readPemObject();
                 X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(object.getContent());
 
